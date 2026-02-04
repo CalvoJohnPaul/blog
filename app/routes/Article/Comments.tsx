@@ -30,7 +30,7 @@ export async function action({request}: Route.ActionArgs) {
   if (method === 'POST') {
     const {errors, data} = await getValidatedFormData(request, resolver);
 
-    if (errors) return {ok: false, error: 'Invalid input'};
+    if (errors) return new Response('Bad request', {status: 400});
 
     await prisma.comment.create({
       data: {
@@ -43,7 +43,7 @@ export async function action({request}: Route.ActionArgs) {
       },
     });
 
-    return {ok: true};
+    return;
   }
 
   if (method === 'DELETE') {
@@ -60,7 +60,7 @@ export async function action({request}: Route.ActionArgs) {
 
     await prisma.comment.delete({where: {id}});
 
-    return {ok: true};
+    return;
   }
 
   return new Response('Not found', {status: 404});

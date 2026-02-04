@@ -23,12 +23,11 @@ export async function action({request}: Route.ActionArgs) {
   if (request.method.toUpperCase() !== 'POST') return new Response('Not found', {status: 404});
 
   const session = await getSession(request.headers.get('Cookie'));
-  const form = await getValidatedFormData(request, resolver);
+  const {errors, data} = await getValidatedFormData(request, resolver);
 
-  if (form.errors) return {error: 'Invalid input'};
+  if (errors) return new Response('Bad request', {status: 400});
 
-  const {name, email, password} = form.data;
-
+  const {name, email, password} = data;
   const exists = await prisma.user.exists({email});
 
   if (exists) {
@@ -36,32 +35,24 @@ export async function action({request}: Route.ActionArgs) {
       error: 'Email is already taken',
     };
   }
+  const {id} = await prisma.user.create({
+    data: {
+      name,
+      email,
+      password: await hash(password, 8),
+    },
+    select: {
+      id: true,
+    },
+  });
 
-  try {
-    const {id} = await prisma.user.create({
-      data: {
-        name,
-        email,
-        password: await hash(password, 8),
-      },
-      select: {
-        id: true,
-      },
-    });
+  session.set('user', id);
 
-    session.set('user', id);
-
-    return redirect('/', {
-      headers: {
-        'Set-Cookie': await commitSession(session),
-      },
-    });
-  } catch (e) {
-    console.log(e);
-    return {
-      error: 'Something went wrong',
-    };
-  }
+  return redirect('/', {
+    headers: {
+      'Set-Cookie': await commitSession(session),
+    },
+  });
 }
 
 export default function Page({actionData}: Route.ComponentProps) {

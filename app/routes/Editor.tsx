@@ -51,37 +51,31 @@ export async function action({request}: Route.ActionArgs) {
 
   if (!userId) return {error: 'Not authenticated'};
 
-  const form = await getValidatedFormData(request, resolver);
+  const {errors, data} = await getValidatedFormData(request, resolver);
 
-  if (form.errors) return {error: 'Invalid input'};
+  if (errors) return new Response('Bad request', {status: 400});
 
-  const {title, content, description, tags} = form.data;
+  const {title, content, description, tags} = data;
   const slug = slugify(title, {
     trim: true,
     lower: true,
   });
 
-  try {
-    const post = await prisma.post.create({
-      data: {
-        slug,
-        title,
-        description,
-        content,
-        tags,
-        userId,
-      },
-      select: {
-        slug: true,
-      },
-    });
+  const post = await prisma.post.create({
+    data: {
+      slug,
+      title,
+      description,
+      content,
+      tags,
+      userId,
+    },
+    select: {
+      slug: true,
+    },
+  });
 
-    return redirect(`/article/${post.slug}`);
-  } catch {
-    return {
-      error: 'Failed to create post',
-    };
-  }
+  return redirect(`/article/${post.slug}`);
 }
 
 export default function Page() {

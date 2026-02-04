@@ -23,44 +23,35 @@ export async function action({request}: Route.ActionArgs) {
   if (request.method.toUpperCase() !== 'POST') return new Response('Not found', {status: 404});
 
   const session = await getSession(request.headers.get('Cookie'));
-  const form = await getValidatedFormData(request, resolver);
+  const {errors, data} = await getValidatedFormData(request, resolver);
 
-  if (form.errors) return {error: 'Invalid input'};
+  if (errors) return new Response('Bad request', {status: 400});
 
-  const {email, password} = form.data;
+  const {email, password} = data;
 
-  try {
-    const user = await prisma.user.findUniqueOrThrow({
-      where: {
-        email,
-      },
-      select: {
-        id: true,
-        password: true,
+  const user = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+    select: {
+      id: true,
+      password: true,
+    },
+  });
+
+  const matches = user != null && (await compare(password, user.password));
+
+  if (matches) {
+    session.set('user', user.id);
+
+    return redirect('/', {
+      headers: {
+        'Set-Cookie': await commitSession(session),
       },
     });
-
-    const matches = await compare(password, user.password);
-
-    if (matches) {
-      session.set('user', user.id);
-
-      return redirect('/', {
-        headers: {
-          'Set-Cookie': await commitSession(session),
-        },
-      });
-    }
-
-    return {
-      error: 'Account not found',
-    };
-  } catch (e) {
-    console.error(e);
-    return {
-      error: 'Account not found',
-    };
   }
+
+  return {error: 'Account not found'};
 }
 
 export default function Page({actionData}: Route.ComponentProps) {

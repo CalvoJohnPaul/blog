@@ -1,12 +1,14 @@
 import {zodResolver} from '@hookform/resolvers/zod';
+import {hash} from 'bcrypt';
 import {isNil, omitBy} from 'es-toolkit';
-import {FrownIcon, PartyPopperIcon} from 'lucide-react';
+import {PartyPopperIcon} from 'lucide-react';
 import {Form} from 'react-router';
 import {getValidatedFormData, useRemixForm} from 'remix-hook-form';
 import * as z from 'zod';
 import {Alert} from '~/components/ui/Alert';
 import {Button} from '~/components/ui/Button';
 import {Field} from '~/components/ui/Field';
+import {PasswordInput} from '~/components/ui/PasswordInput';
 import {prisma} from '~/config/prisma';
 import {getSession} from '~/utils/session';
 import type {Route} from './+types/Settings';
@@ -29,23 +31,23 @@ const resolver = zodResolver(
 export async function action({request}: Route.ActionArgs) {
   const {errors, data} = await getValidatedFormData(request, resolver);
 
-  if (errors) return {ok: false, error: 'Invalid input'};
+  if (errors) return new Response('Bad request', {status: 400});
 
   const session = await getSession(request.headers.get('Cookie'));
+  const input = omitBy(data, (v) => isNil(v) || v === '');
 
-  try {
-    await prisma.user.update({
-      where: {id: session.data.user},
-      data: omitBy(data, (v) => isNil(v) || v === ''),
-      select: {
-        id: true,
-      },
-    });
+  await prisma.user.update({
+    where: {id: session.data.user},
+    data: {
+      ...input,
+      password: input.password ? await hash(input.password, 8) : undefined,
+    },
+    select: {
+      id: true,
+    },
+  });
 
-    return {ok: true};
-  } catch {
-    return {ok: false, error: 'Failed to update account'};
-  }
+  return {ok: true};
 }
 
 export async function loader({request}: Route.LoaderArgs) {
@@ -83,25 +85,14 @@ export default function Page({actionData, loaderData}: Route.ComponentProps) {
       <h1 className="text-center text-4xl">Your Settings</h1>
 
       <Form method="POST" onSubmit={form.handleSubmit} className="mt-6 space-y-4">
-        {actionData != null && (
+        {!!actionData?.ok && (
           <div>
-            {actionData.ok && (
-              <Alert.Root>
-                <Alert.Icon>
-                  <PartyPopperIcon />
-                </Alert.Icon>
-                <Alert.Label>Changes have been saved</Alert.Label>
-              </Alert.Root>
-            )}
-
-            {!actionData.ok && (
-              <Alert.Root accent="danger">
-                <Alert.Icon>
-                  <FrownIcon />
-                </Alert.Icon>
-                <Alert.Label>{actionData.error ?? 'Something went wrong'}</Alert.Label>
-              </Alert.Root>
-            )}
+            <Alert.Root>
+              <Alert.Icon>
+                <PartyPopperIcon />
+              </Alert.Icon>
+              <Alert.Label>Changes have been saved</Alert.Label>
+            </Alert.Root>
           </div>
         )}
 
@@ -127,14 +118,21 @@ export default function Page({actionData, loaderData}: Route.ComponentProps) {
           <Field.ErrorText>{form.formState.errors.email?.message}</Field.ErrorText>
         </Field.Root>
         <Field.Root invalid={!!form.formState.errors.password}>
-          <Field.Input
+          <PasswordInput.Root
             size="lg"
-            type="password"
-            placeholder="New Password"
+            autoComplete="current-password"
             {...form.register('password')}
-          />
+          >
+            <PasswordInput.Control>
+              <PasswordInput.Input placeholder="New Password" />
+              <PasswordInput.VisibilityTrigger>
+                <PasswordInput.Indicator />
+              </PasswordInput.VisibilityTrigger>
+            </PasswordInput.Control>
+          </PasswordInput.Root>
           <Field.ErrorText>{form.formState.errors.password?.message}</Field.ErrorText>
         </Field.Root>
+
         <div className="lg:flex lg:justify-end">
           <Button
             type="submit"
