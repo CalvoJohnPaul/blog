@@ -1,0 +1,22 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@plugin "tailwind-zag";
+
+@layer base {
+  button {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  button[data-disabled] {
+    cursor: not-allowed;
+  }
+}
+
+@theme {
+  --font-body: "Source Sans 3", sans-serif;
+  --font-heading: "Titillium Web", sans-serif;
+}
+
+@custom-variant tiptap (& .tiptap);
+@custom-variant icon (& svg);
