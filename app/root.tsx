@@ -32,6 +32,7 @@ export function Layout({children}: {children: React.ReactNode}) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
+        <title>Blog</title>
       </head>
       <body className="min-h-dvh bg-white font-body text-gray-800">
         {children}

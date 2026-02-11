@@ -4,7 +4,7 @@ import {Avatar} from '~/components/ui/Avatar';
 import {prisma} from '~/config/prisma';
 import type {Route} from './+types/Layout';
 
-export async function loader({params}: Route.LoaderArgs) {
+export async function loader({params, request}: Route.LoaderArgs) {
   const post = await prisma.post.findUnique({
     where: {
       slug: params.slug,
@@ -45,7 +45,26 @@ export async function loader({params}: Route.LoaderArgs) {
 
   if (post == null) throw new Response('Not Found', {status: 404});
 
-  return {post};
+  return {post, canonicalUrl: new URL(request.url).toString()};
+}
+
+export function meta({loaderData}: Route.MetaArgs) {
+  const description =
+    loaderData.post.description.trim().slice(0, 157) +
+    (loaderData.post.description.length > 160 ? '...' : '');
+
+  return [
+    {title: `${loaderData.post.title} | Blog`},
+    {name: 'description', content: description},
+    {property: 'og:title', content: loaderData.post.title},
+    {property: 'og:description', content: description},
+    {property: 'og:type', content: 'article'},
+    {property: 'og:url', content: loaderData.canonicalUrl},
+    {property: 'og:site_name', content: 'Blog'},
+    {property: 'article:published_time', content: loaderData.post.createdAt.toISOString()},
+    {name: 'twitter:card', content: 'summary'},
+    {name: 'keywords', content: loaderData.post.tags.filter(Boolean).join(', ')},
+  ];
 }
 
 export default function Page({loaderData}: Route.ComponentProps) {
