@@ -62,6 +62,9 @@ export async function loader({request}: Route.LoaderArgs) {
       email: true,
       image: true,
     },
+    cacheStrategy: {
+      swr: 60,
+    },
   });
 
   return {user};

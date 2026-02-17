@@ -1,11 +1,12 @@
-import {PrismaPg} from '@prisma/adapter-pg';
+import {withAccelerate} from '@prisma/extension-accelerate';
+import assert from 'node:assert';
 import {Prisma, PrismaClient} from '~/generated/prisma/client';
 
-const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL,
-});
+const accelerateUrl = process.env.DATABASE_URL;
 
-const prisma = new PrismaClient({adapter}).$extends({
+assert(accelerateUrl);
+
+const prisma = new PrismaClient({accelerateUrl}).$extends(withAccelerate()).$extends({
   model: {
     $allModels: {
       async exists<T>(this: T, where: Prisma.Args<T, 'findFirst'>['where']) {

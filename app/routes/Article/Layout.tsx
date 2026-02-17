@@ -41,6 +41,10 @@ export async function loader({params, request}: Route.LoaderArgs) {
       },
       createdAt: true,
     },
+    cacheStrategy: {
+      ttl: 60 * 60,
+      swr: 60,
+    },
   });
 
   if (post == null) throw new Response('Not Found', {status: 404});

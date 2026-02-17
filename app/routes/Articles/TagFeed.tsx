@@ -40,6 +40,9 @@ export async function loader({request, params}: Route.LoaderArgs) {
             id: true,
             name: true,
           },
+          cacheStrategy: {
+            swr: 60,
+          },
         });
 
   const url = new URL(request.url);
@@ -53,6 +56,10 @@ export async function loader({request, params}: Route.LoaderArgs) {
       tags: {
         has: params.tag,
       },
+    },
+    cacheStrategy: {
+      ttl: 60 * 60,
+      swr: 60,
     },
   });
 
@@ -92,6 +99,10 @@ export async function loader({request, params}: Route.LoaderArgs) {
     },
     take: pageSize,
     skip: pageSize * (page - 1),
+    cacheStrategy: {
+      ttl: 60 * 60,
+      swr: 60,
+    },
   });
 
   const [total, posts, user] = userQuery

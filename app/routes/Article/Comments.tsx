@@ -92,6 +92,10 @@ export async function loader({request, params}: Route.LoaderArgs) {
         },
       },
     },
+    cacheStrategy: {
+      ttl: 60 * 60,
+      swr: 60,
+    },
   });
 
   const [post, user] = session.data.user
@@ -103,6 +107,9 @@ export async function loader({request, params}: Route.LoaderArgs) {
             id: true,
             name: true,
             image: true,
+          },
+          cacheStrategy: {
+            swr: 60,
           },
         }),
       ])

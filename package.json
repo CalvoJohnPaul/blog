@@ -1,7 +1,8 @@
 {
-  "name": "v3",
-  "private": true,
+  "name": "blog",
   "type": "module",
+  "private": true,
+  "packageManager": "pnpm@10.29.3",
   "scripts": {
     "build": "react-router build",
     "dev": "react-router dev",
@@ -17,6 +18,7 @@
     "@hookform/resolvers": "5.2.2",
     "@prisma/adapter-pg": "7.3.0",
     "@prisma/client": "7.4.0",
+    "@prisma/extension-accelerate": "^3.0.1",
     "@radix-ui/react-use-controllable-state": "1.2.2",
     "@react-router/node": "7.12.0",
     "@react-router/serve": "7.12.0",
@@ -80,6 +82,5 @@
     "typescript": "5.9.2",
     "vite": "7.1.7",
     "vite-tsconfig-paths": "5.1.4"
-  },
-  "packageManager": "pnpm@10.29.3+sha512.498e1fb4cca5aa06c1dcf2611e6fafc50972ffe7189998c409e90de74566444298ffe43e6cd2acdc775ba1aa7cc5e092a8b7054c811ba8c5770f84693d33d2dc"
+  }
 }

@@ -45,6 +45,9 @@ export async function loader({request}: Route.LoaderArgs) {
       id: true,
       name: true,
     },
+    cacheStrategy: {
+      swr: 60,
+    },
   });
 
   const postsCountQuery = prisma.post.count({
@@ -56,6 +59,10 @@ export async function loader({request}: Route.LoaderArgs) {
           },
         },
       },
+    },
+    cacheStrategy: {
+      ttl: 60 * 60,
+      swr: 60,
     },
   });
 
@@ -99,6 +106,10 @@ export async function loader({request}: Route.LoaderArgs) {
     },
     take: pageSize,
     skip: pageSize * (page - 1),
+    cacheStrategy: {
+      ttl: 60 * 60,
+      swr: 60,
+    },
   });
 
   const [total, posts, user] = await prisma.$transaction([postsCountQuery, postsQuery, userQuery]);

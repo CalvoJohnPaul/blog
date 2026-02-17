@@ -16,11 +16,6 @@
     "indentWidth": 2,
     "bracketSpacing": false
   },
-  "javascript": {
-    "formatter": {
-      "quoteStyle": "single"
-    }
-  },
   "linter": {
     "enabled": true,
     "rules": {
@@ -49,11 +44,9 @@
       "react": "recommended"
     }
   },
-  "assist": {
-    "actions": {
-      "source": {
-        "organizeImports": "on"
-      }
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single"
     }
   },
   "css": {
@@ -64,6 +57,13 @@
   "html": {
     "formatter": {
       "enabled": true
+    }
+  },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "off"
+      }
     }
   }
 }

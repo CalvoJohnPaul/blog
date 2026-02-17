@@ -17,6 +17,9 @@ export async function loader({request}: Route.LoaderArgs) {
           id: true,
           name: true,
         },
+        cacheStrategy: {
+          swr: 60,
+        },
       })
     : null;
 

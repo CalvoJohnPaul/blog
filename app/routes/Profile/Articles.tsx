@@ -49,6 +49,9 @@ export async function loader({request, params}: Route.LoaderArgs) {
             id: true,
             name: true,
           },
+          cacheStrategy: {
+            swr: 60,
+          },
         });
 
   const url = new URL(request.url);
@@ -57,7 +60,13 @@ export async function loader({request, params}: Route.LoaderArgs) {
     pageSize: url.searchParams.get('pageSize'),
   });
 
-  const postsCountQuery = prisma.post.count({where: {userId}});
+  const postsCountQuery = prisma.post.count({
+    where: {userId},
+    cacheStrategy: {
+      ttl: 60 * 60,
+      swr: 60,
+    },
+  });
   const postsQuery = prisma.post.findMany({
     where: {userId},
     select: {
@@ -90,6 +99,10 @@ export async function loader({request, params}: Route.LoaderArgs) {
     },
     take: pageSize,
     skip: pageSize * (page - 1),
+    cacheStrategy: {
+      ttl: 60 * 60,
+      swr: 60,
+    },
   });
 
   const [total, posts, user] = userQuery

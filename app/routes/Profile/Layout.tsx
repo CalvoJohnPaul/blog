@@ -32,6 +32,9 @@ export async function loader({request, params}: Route.LoaderArgs) {
         },
       },
     },
+    cacheStrategy: {
+      swr: 60 * 5,
+    },
   });
 
   const [user, profile] = session.data.user
