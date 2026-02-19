@@ -1,3 +1,5 @@
+'use client';
+
 import {ark} from '@ark-ui/react';
 import {createRecipeContext} from '~/utils/createRecipeContext';
 import {alertRecipe} from './Alert.recipe';

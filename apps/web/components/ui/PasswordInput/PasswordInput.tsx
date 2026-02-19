@@ -1,3 +1,5 @@
+'use client';
+
 import {PasswordInput} from '@ark-ui/react/password-input';
 import {EyeClosedIcon, EyeIcon} from 'lucide-react';
 import {createRecipeContext} from '~/utils/createRecipeContext';

@@ -1,3 +1,5 @@
+'use client';
+
 import {TagsInput} from '@ark-ui/react';
 import {XIcon} from 'lucide-react';
 import {createRecipeContext} from '~/utils/createRecipeContext';

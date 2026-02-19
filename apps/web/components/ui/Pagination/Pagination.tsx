@@ -1,3 +1,5 @@
+'use client';
+
 import {Pagination} from '@ark-ui/react';
 import {
   ChevronLeft,

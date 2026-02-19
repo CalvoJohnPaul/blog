@@ -1,3 +1,5 @@
+'use client';
+
 import {Avatar} from '@ark-ui/react/avatar';
 import {SmileIcon} from 'lucide-react';
 import {createRecipeContext} from '~/utils/createRecipeContext';

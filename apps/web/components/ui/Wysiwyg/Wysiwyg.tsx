@@ -1,3 +1,5 @@
+'use client';
+
 import {Wysiwyg} from '~/components/core/Wysiwyg';
 import {createRecipeContext} from '~/utils/createRecipeContext';
 import {wysiwygRecipe} from './Wysiwyg.recipe';
@@ -7,16 +9,12 @@ const {withContext, withProvider} = createRecipeContext(wysiwygRecipe);
 export const Root = withProvider(Wysiwyg.Root, 'root');
 export const BlockquoteTrigger = withContext(Wysiwyg.BlockquoteTrigger, 'blockquoteTrigger');
 export const BoldTrigger = withContext(Wysiwyg.BoldTrigger, 'boldTrigger');
-export const BubbleMenu = withContext(Wysiwyg.BubbleMenu, 'bubbleMenu');
 export const BulletListTrigger = withContext(Wysiwyg.BulletListTrigger, 'bulletListTrigger');
 export const CodeBlockTrigger = withContext(Wysiwyg.CodeBlockTrigger, 'codeBlockTrigger');
 export const Content = withContext(Wysiwyg.Content, 'content');
 export const Control = withContext(Wysiwyg.Control, 'control');
-export const FloatingMenu = withContext(Wysiwyg.FloatingMenu, 'floatingMenu');
 export const HardBreakTrigger = withContext(Wysiwyg.HardBreakTrigger, 'hardBreakTrigger');
 export const HeadingTrigger = withContext(Wysiwyg.HeadingTrigger, 'headingTrigger');
-export const ImageHiddenInput = Wysiwyg.ImageHiddenInput;
-export const ImageTrigger = withContext(Wysiwyg.ImageTrigger, 'imageTrigger');
 export const ItalicTrigger = withContext(Wysiwyg.ItalicTrigger, 'italicTrigger');
 export const LinkTrigger = withContext(Wysiwyg.LinkTrigger, 'linkTrigger');
 export const OrderedListTrigger = withContext(Wysiwyg.OrderedListTrigger, 'orderedListTrigger');
