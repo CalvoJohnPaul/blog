@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.3.13/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.4.2/schema.json",
   "vcs": {
     "enabled": true,
     "clientKind": "git",
@@ -44,14 +44,16 @@
       "react": "recommended"
     }
   },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "off"
+      }
+    }
+  },
   "javascript": {
     "formatter": {
       "quoteStyle": "single"
-    }
-  },
-  "css": {
-    "parser": {
-      "tailwindDirectives": true
     }
   },
   "html": {
@@ -59,11 +61,9 @@
       "enabled": true
     }
   },
-  "assist": {
-    "actions": {
-      "source": {
-        "organizeImports": "off"
-      }
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
     }
   }
 }

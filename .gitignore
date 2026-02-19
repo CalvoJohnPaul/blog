@@ -1,6 +1,7 @@
 node_modules
-build
+dist
 .vercel
-.env
-.react-router
-**/generated/prisma
+.next
+next-env.d.ts
+legacy
+.generated
