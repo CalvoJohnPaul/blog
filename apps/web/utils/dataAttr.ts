@@ -1,1 +1,3 @@
-export const dataAttr = (guard: boolean | undefined) => (guard ? '' : undefined);
+import {cache} from 'react';
+
+export const dataAttr = cache((guard: boolean | undefined) => (guard ? '' : undefined));
