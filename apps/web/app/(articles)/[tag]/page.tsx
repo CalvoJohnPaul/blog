@@ -21,8 +21,7 @@ export default function Page() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const meQuery = useMeQuery();
-  const params = useParams<{id: string}>();
-  const userId = Number(params.id);
+  const params = useParams<{tag: string}>();
 
   const {page, pageSize} = PostsInputDefinition.parse({
     page: searchParams.get('page'),
@@ -32,7 +31,7 @@ export default function Page() {
   const postsQuery = usePostsQuery({
     page,
     pageSize,
-    userId__eq: userId,
+    tag__eq: params.tag,
   });
 
   const addToFavouritesMutation = useAddPostToFavouritesMutation();

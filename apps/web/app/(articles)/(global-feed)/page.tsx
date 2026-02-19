@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import {format} from 'date-fns';
 import {HeartIcon} from 'lucide-react';
 import Link from 'next/link';
-import {useParams, useRouter, useSearchParams} from 'next/navigation';
+import {useRouter, useSearchParams} from 'next/navigation';
 import {Avatar} from '~/components/ui/Avatar';
 import {Pagination} from '~/components/ui/Pagination';
 import type {Paginated} from '~/definitions/common';
@@ -21,8 +21,6 @@ export default function Page() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const meQuery = useMeQuery();
-  const params = useParams<{id: string}>();
-  const userId = Number(params.id);
 
   const {page, pageSize} = PostsInputDefinition.parse({
     page: searchParams.get('page'),
@@ -32,7 +30,6 @@ export default function Page() {
   const postsQuery = usePostsQuery({
     page,
     pageSize,
-    userId__eq: userId,
   });
 
   const addToFavouritesMutation = useAddPostToFavouritesMutation();

@@ -1,3 +1,4 @@
+import {clamp} from 'es-toolkit';
 import * as z from 'zod';
 import {
   Date__QueryStringDefinition,
@@ -15,7 +16,9 @@ export const UserDefinition = z.object({
   bio: z.string(),
   name: z.string(),
   email: z.email(),
-  image: z.url(),
+  image: z.string(),
+  followers: z.array(IdDefinition),
+  following: z.array(IdDefinition),
   createdAt: DateDefinition,
   updatedAt: DateDefinition,
 });
@@ -29,8 +32,8 @@ export const CreateUserInputDefinition = z.object({
   password: z.string().trim().min(8, 'Password too short').max(100, 'Password too long'),
 });
 
-export type UpdateUserInput = z.infer<typeof UpdateUserInputDefinition>;
-export const UpdateUserInputDefinition = z.object({
+export type UpdateUserDataInput = z.infer<typeof UpdateUserDataInputDefinition>;
+export const UpdateUserDataInputDefinition = z.object({
   bio: CreateUserInputDefinition.shape.bio.optional(),
   name: CreateUserInputDefinition.shape.name.optional().or(z.literal('')),
   email: CreateUserInputDefinition.shape.email.optional().or(z.literal('')),
@@ -38,25 +41,38 @@ export const UpdateUserInputDefinition = z.object({
   password: CreateUserInputDefinition.shape.password.optional().or(z.literal('')),
 });
 
-export type UsersInput = z.infer<typeof UsersInputDefinition>;
-export const UsersInputDefinition = z.object({
-  page: Number__QueryStringDefinition,
-  pageSize: Number__QueryStringDefinition,
-  id__eq: Number__QueryStringDefinition,
-  id__neq: Number__QueryStringDefinition,
-  id__in: NumberArray__QueryStringDefinition,
-  id__nin: NumberArray__QueryStringDefinition,
-  email__eq: String__QueryStringDefinition,
-  email__neq: String__QueryStringDefinition,
-  email__in: StringArray__QueryStringDefinition,
-  email__nin: StringArray__QueryStringDefinition,
-  email__contains: String__QueryStringDefinition,
-  createdAt__gt: Date__QueryStringDefinition,
-  createdAt__gte: Date__QueryStringDefinition,
-  createdAt__lt: Date__QueryStringDefinition,
-  createdAt__lte: Date__QueryStringDefinition,
-  updatedAt__gt: Date__QueryStringDefinition,
-  updatedAt__gte: Date__QueryStringDefinition,
-  updatedAt__lt: Date__QueryStringDefinition,
-  updatedAt__lte: Date__QueryStringDefinition,
+export type UpdateUserInput = z.infer<typeof UpdateUserInputDefinition>;
+export const UpdateUserInputDefinition = z.object({
+  id: IdDefinition,
+  data: UpdateUserDataInputDefinition,
 });
+
+export type UsersInput = z.infer<typeof UsersInputDefinition>;
+export const UsersInputDefinition = z
+  .object({
+    page: Number__QueryStringDefinition,
+    pageSize: Number__QueryStringDefinition,
+    id__eq: Number__QueryStringDefinition,
+    id__neq: Number__QueryStringDefinition,
+    id__in: NumberArray__QueryStringDefinition,
+    id__nin: NumberArray__QueryStringDefinition,
+    email__eq: String__QueryStringDefinition,
+    email__neq: String__QueryStringDefinition,
+    email__in: StringArray__QueryStringDefinition,
+    email__nin: StringArray__QueryStringDefinition,
+    email__contains: String__QueryStringDefinition,
+    createdAt__gt: Date__QueryStringDefinition,
+    createdAt__gte: Date__QueryStringDefinition,
+    createdAt__lt: Date__QueryStringDefinition,
+    createdAt__lte: Date__QueryStringDefinition,
+    updatedAt__gt: Date__QueryStringDefinition,
+    updatedAt__gte: Date__QueryStringDefinition,
+    updatedAt__lt: Date__QueryStringDefinition,
+    updatedAt__lte: Date__QueryStringDefinition,
+  })
+  .partial()
+  .transform((v) => ({
+    ...v,
+    page: clamp(v.page ?? 1, 1, Number.MAX_SAFE_INTEGER),
+    pageSize: clamp(v.pageSize ?? 10, 1, 100),
+  }));

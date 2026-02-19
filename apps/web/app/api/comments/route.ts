@@ -1,34 +1,34 @@
 import {clamp} from 'es-toolkit';
+import {NextResponse, type NextRequest} from 'next/server';
 import type {Prisma} from '~/.generated/prisma/client';
 import {prisma} from '~/config/prisma';
-import type {
-  Comment,
-  CommentsInput,
-  CreateCommentInput,
-  UpdateCommentInput,
-} from '~/definitions/Comment';
-import type {Paginated} from '~/definitions/common';
+import {
+  CommentsInputDefinition,
+  CreateCommentInputDefinition,
+  type Comment,
+} from '~/definitions/comment';
+import {IdDefinition, type HttpResponse, type Paginated} from '~/definitions/common';
 
-export async function getComments(input?: CommentsInput): Promise<Paginated<Comment>> {
+export async function GET(req: NextRequest) {
+  const searchParams = req.nextUrl.searchParams;
+  const parsed = CommentsInputDefinition.safeParse(Object.fromEntries(searchParams.entries()));
+
+  if (!parsed.success) {
+    return NextResponse.json<HttpResponse<Paginated<Comment>>>({
+      ok: false,
+      error: {
+        name: 'BadRequestError',
+        message: 'Invalid input',
+      },
+    });
+  }
+
+  const input = parsed.data;
   const page = clamp(input?.page ?? 1, 1, Number.MAX_SAFE_INTEGER);
   const take = clamp(input?.pageSize ?? 10, 10, 100);
   const skip = (page - 1) * take;
 
   const where: Prisma.CommentWhereInput = {};
-
-  if (
-    input?.id__eq != null ||
-    input?.id__neq != null ||
-    input?.id__in != null ||
-    input?.id__nin != null
-  ) {
-    where.id = {
-      ...(input.id__eq != null ? {equals: input.id__eq} : {}),
-      ...(input.id__neq != null ? {not: input.id__neq} : {}),
-      ...(input.id__in != null ? {in: input.id__in} : {}),
-      ...(input.id__nin != null ? {notIn: input.id__nin} : {}),
-    };
-  }
 
   if (
     input?.postId__eq != null ||
@@ -112,17 +112,54 @@ export async function getComments(input?: CommentsInput): Promise<Paginated<Comm
     }),
   ]);
 
-  return {
-    data,
-    count,
-    hasNext: false,
-    hasPrevious: false,
-  };
+  const hasNext = skip + take < count;
+  const hasPrevious = page > 1;
+
+  return NextResponse.json<HttpResponse<Paginated<Comment>>>({
+    ok: true,
+    data: {
+      rows: data,
+      count,
+      hasNext,
+      hasPrevious,
+    },
+  });
 }
 
-export async function getComment(id: number): Promise<Comment | null> {
-  return await prisma.comment.findUnique({
-    where: {id},
+export async function POST(req: NextRequest) {
+  const userId = IdDefinition.nullable()
+    .optional()
+    .catch(null)
+    .parse(req.cookies.get('user')?.value);
+
+  if (userId == null) {
+    return NextResponse.json<HttpResponse<Comment>>({
+      ok: false,
+      error: {
+        name: 'UnauthorizedError',
+        message: 'You must be logged in to create a post',
+      },
+    });
+  }
+
+  const input = await req.json();
+  const parsed = CreateCommentInputDefinition.safeParse(input);
+
+  if (!parsed.success) {
+    return NextResponse.json<HttpResponse<Comment>>({
+      ok: false,
+      error: {
+        name: 'BadRequestError',
+        message: 'Invalid input',
+      },
+    });
+  }
+
+  const data = await prisma.comment.create({
+    data: {
+      ...parsed.data,
+      userId,
+    },
     select: {
       id: true,
       postId: true,
@@ -138,49 +175,9 @@ export async function getComment(id: number): Promise<Comment | null> {
       updatedAt: true,
     },
   });
-}
 
-export async function createComment(data: CreateCommentInput): Promise<Comment> {
-  return await prisma.comment.create({
+  return NextResponse.json<HttpResponse<Comment>>({
+    ok: true,
     data,
-    select: {
-      id: true,
-      postId: true,
-      user: {
-        select: {
-          id: true,
-          name: true,
-          image: true,
-        },
-      },
-      content: true,
-      createdAt: true,
-      updatedAt: true,
-    },
   });
-}
-
-export async function updateComment(id: number, data: UpdateCommentInput): Promise<Comment> {
-  return await prisma.comment.update({
-    where: {id},
-    data,
-    select: {
-      id: true,
-      postId: true,
-      user: {
-        select: {
-          id: true,
-          name: true,
-          image: true,
-        },
-      },
-      content: true,
-      createdAt: true,
-      updatedAt: true,
-    },
-  });
-}
-
-export async function deleteComment(id: number): Promise<void> {
-  await prisma.comment.delete({where: {id}});
 }

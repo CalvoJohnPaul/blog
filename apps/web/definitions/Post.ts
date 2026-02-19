@@ -1,5 +1,7 @@
+import {clamp} from 'es-toolkit';
 import * as z from 'zod';
 import {
+  Boolean__QueryStringDefinition,
   Date__QueryStringDefinition,
   DateDefinition,
   IdDefinition,
@@ -8,7 +10,7 @@ import {
   String__QueryStringDefinition,
   StringArray__QueryStringDefinition,
 } from './common';
-import {UserDefinition} from './User';
+import {UserDefinition} from './user';
 
 export type Post = z.infer<typeof PostDefinition>;
 export const PostDefinition = z.object({
@@ -25,6 +27,7 @@ export const PostDefinition = z.object({
   }),
   commentsCount: z.number(),
   favouritesCount: z.number(),
+  favourite: z.boolean(),
   createdAt: DateDefinition,
   updatedAt: DateDefinition,
 });
@@ -49,28 +52,41 @@ export const UpdatePostInputDefinition = z.object({
 });
 
 export type PostsInput = z.infer<typeof PostsInputDefinition>;
-export const PostsInputDefinition = z.object({
-  page: Number__QueryStringDefinition,
-  pageSize: Number__QueryStringDefinition,
-  id__eq: Number__QueryStringDefinition,
-  id__neq: Number__QueryStringDefinition,
-  id__in: NumberArray__QueryStringDefinition,
-  id__nin: NumberArray__QueryStringDefinition,
-  slug__eq: String__QueryStringDefinition,
-  slug__neq: String__QueryStringDefinition,
-  slug__in: StringArray__QueryStringDefinition,
-  slug__nin: StringArray__QueryStringDefinition,
-  slug__contains: String__QueryStringDefinition,
-  userId__eq: Number__QueryStringDefinition,
-  userId__neq: Number__QueryStringDefinition,
-  userId__in: NumberArray__QueryStringDefinition,
-  userId__nin: NumberArray__QueryStringDefinition,
-  createdAt__gt: Date__QueryStringDefinition,
-  createdAt__gte: Date__QueryStringDefinition,
-  createdAt__lt: Date__QueryStringDefinition,
-  createdAt__lte: Date__QueryStringDefinition,
-  updatedAt__gt: Date__QueryStringDefinition,
-  updatedAt__gte: Date__QueryStringDefinition,
-  updatedAt__lt: Date__QueryStringDefinition,
-  updatedAt__lte: Date__QueryStringDefinition,
-});
+export const PostsInputDefinition = z
+  .object({
+    page: Number__QueryStringDefinition,
+    pageSize: Number__QueryStringDefinition,
+    id__eq: Number__QueryStringDefinition,
+    id__neq: Number__QueryStringDefinition,
+    id__in: NumberArray__QueryStringDefinition,
+    id__nin: NumberArray__QueryStringDefinition,
+    slug__eq: String__QueryStringDefinition,
+    slug__neq: String__QueryStringDefinition,
+    slug__in: StringArray__QueryStringDefinition,
+    slug__nin: StringArray__QueryStringDefinition,
+    slug__contains: String__QueryStringDefinition,
+    tag__eq: String__QueryStringDefinition,
+    tag__neq: String__QueryStringDefinition,
+    tag__in: StringArray__QueryStringDefinition,
+    tag__nin: StringArray__QueryStringDefinition,
+    userId__eq: Number__QueryStringDefinition,
+    userId__neq: Number__QueryStringDefinition,
+    userId__in: NumberArray__QueryStringDefinition,
+    userId__nin: NumberArray__QueryStringDefinition,
+    createdAt__gt: Date__QueryStringDefinition,
+    createdAt__gte: Date__QueryStringDefinition,
+    createdAt__lt: Date__QueryStringDefinition,
+    createdAt__lte: Date__QueryStringDefinition,
+    updatedAt__gt: Date__QueryStringDefinition,
+    updatedAt__gte: Date__QueryStringDefinition,
+    updatedAt__lt: Date__QueryStringDefinition,
+    updatedAt__lte: Date__QueryStringDefinition,
+    favourited__eq: Boolean__QueryStringDefinition,
+    favourited__neq: Boolean__QueryStringDefinition,
+  })
+  .partial()
+  .transform((v) => ({
+    ...v,
+    page: clamp(v.page ?? 1, 1, Number.MAX_SAFE_INTEGER),
+    pageSize: clamp(v.pageSize ?? 10, 1, 100),
+  }));
