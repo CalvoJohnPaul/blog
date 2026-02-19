@@ -14,9 +14,6 @@ export const PaginatedDefinition = <T extends z.ZodType>(def: T) =>
     count: z.number(),
   });
 
-export type SortOrder = z.infer<typeof SortOrderDefinition>;
-export const SortOrderDefinition = z.enum(['ASC', 'DESC']);
-
 export const Number__QueryStringDefinition = z.union([
   z
     .number()
