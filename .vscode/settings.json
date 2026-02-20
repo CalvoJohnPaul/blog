@@ -3,8 +3,5 @@
     "*.css": "tailwindcss"
   },
   "prettier.enable": false,
-  "tailwindCSS.classFunctions": ["clsx", "tv"],
-  "tailwindCSS.experimental.configFile": {
-    "apps/web/app/globals.css": "apps/web/**"
-  }
+  "tailwindCSS.classFunctions": ["clsx", "tv"]
 }
