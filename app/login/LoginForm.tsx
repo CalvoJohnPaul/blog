@@ -30,6 +30,7 @@ export function LoginForm() {
         try {
           await mutation.mutateAsync(data);
           await client.invalidateQueries({queryKey: useMeQuery.getQueryKey()});
+          toaster.dismiss();
           router.push('/');
         } catch {
           toaster.error({
