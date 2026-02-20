@@ -1,10 +1,11 @@
 import {dehydrate, HydrationBoundary} from '@tanstack/react-query';
 import type {Metadata} from 'next';
 import {notFound} from 'next/navigation';
-import type {ReactNode} from 'react';
+import {Suspense, type ReactNode} from 'react';
 import {IdDefinition} from '~/definitions/common';
 import type {User} from '~/definitions/user';
 import {useUserQuery} from '~/hooks/useUserQuery';
+import {SpinnerIcon} from '~/icons/SpinnerIcon';
 import {findUser} from '~/services/User';
 import {getQueryClient} from '~/utils/getQueryClient';
 import {Menu} from './Menu';
@@ -52,7 +53,7 @@ export default async function Layout(props: Props) {
         <Profile />
         <section className="mx-auto mt-10 max-w-3xl px-4">
           <Menu />
-          {props.children}
+          <Suspense fallback={<SpinnerIcon className="size-6 mt-8" />}>{props.children}</Suspense>
         </section>
       </HydrationBoundary>
     </div>
