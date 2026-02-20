@@ -1,7 +1,7 @@
 import type {Metadata} from 'next';
 import Link from 'next/link';
 import {redirect} from 'next/navigation';
-import {getCurrentUser} from '../services/Session';
+import {getCurrentUser} from '../../services/Session';
 import {RegisterForm} from './RegisterForm';
 
 export const metadata: Metadata = {

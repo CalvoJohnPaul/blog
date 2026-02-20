@@ -1,11 +1,11 @@
 import {NextResponse, type NextRequest} from 'next/server';
-import {createComment, findComments} from '~/app/services/Comment';
 import {
   CommentsInputDefinition,
   CreateCommentInputDefinition,
   type Comment,
 } from '~/definitions/comment';
 import {IdDefinition, type HttpResponse, type Paginated} from '~/definitions/common';
+import {createComment, findComments} from '~/services/Comment';
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;

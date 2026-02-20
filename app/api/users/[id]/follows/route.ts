@@ -1,6 +1,6 @@
 import {NextResponse, type NextRequest} from 'next/server';
-import {follow, unfollow} from '~/app/services/Follow';
 import {IdDefinition, type VoidHttpResponse} from '~/definitions/common';
+import {follow, unfollow} from '~/services/Follow';
 
 export async function PUT(req: NextRequest, ctx: RouteContext<'/api/users/[id]/follows'>) {
   const followerId = IdDefinition.optional()

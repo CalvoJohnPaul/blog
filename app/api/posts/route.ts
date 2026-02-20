@@ -1,7 +1,7 @@
 import {NextResponse, type NextRequest} from 'next/server';
-import {createPost, findPosts} from '~/app/services/Post';
 import {IdDefinition, type HttpResponse, type Paginated} from '~/definitions/common';
 import {CreatePostInputDefinition, PostsInputDefinition, type Post} from '~/definitions/post';
+import {createPost, findPosts} from '~/services/Post';
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;

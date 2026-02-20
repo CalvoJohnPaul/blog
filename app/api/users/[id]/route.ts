@@ -1,7 +1,7 @@
 import {type NextRequest, NextResponse} from 'next/server';
-import {findUser} from '~/app/services/User';
 import {type HttpResponse, IdDefinition} from '~/definitions/common';
 import type {User} from '~/definitions/user';
+import {findUser} from '~/services/User';
 
 export async function GET(_req: NextRequest, ctx: RouteContext<'/api/users/[id]'>) {
   const params = await ctx.params;

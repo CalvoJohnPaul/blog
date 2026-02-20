@@ -1,6 +1,6 @@
 import type {Metadata} from 'next';
 import {notFound} from 'next/navigation';
-import {getCurrentUser} from '../services/Session';
+import {getCurrentUser} from '../../services/Session';
 import {EditorForm} from './EditorForm';
 
 export const metadata: Metadata = {

@@ -1,9 +1,9 @@
 import {addDays} from 'date-fns';
 import {NextResponse, type NextRequest} from 'next/server';
-import {createUser} from '~/app/services/User';
 import {prisma} from '~/config/prisma';
 import type {HttpResponse} from '~/definitions/common';
 import {CreateUserInputDefinition, type User} from '~/definitions/user';
+import {createUser} from '~/services/User';
 
 export async function POST(req: NextRequest) {
   const input = await req.json();

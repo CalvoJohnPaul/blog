@@ -2,10 +2,10 @@ import {dehydrate, HydrationBoundary} from '@tanstack/react-query';
 import type {Metadata} from 'next';
 import {notFound} from 'next/navigation';
 import type {ReactNode} from 'react';
-import {findUser} from '~/app/services/User';
 import {IdDefinition} from '~/definitions/common';
 import type {User} from '~/definitions/user';
 import {useUserQuery} from '~/hooks/useUserQuery';
+import {findUser} from '~/services/User';
 import {getQueryClient} from '~/utils/getQueryClient';
 import {Menu} from './Menu';
 import {Profile} from './Profile';
@@ -35,10 +35,12 @@ export default async function Layout(props: Props) {
   if (userId == null) return notFound();
 
   const client = getQueryClient();
-  await client.prefetchQuery({
-    queryKey: useUserQuery.getQueryKey(userId),
-    queryFn: () => findUser(userId),
-  });
+  await client
+    .prefetchQuery({
+      queryKey: useUserQuery.getQueryKey(userId),
+      queryFn: () => findUser(userId),
+    })
+    .catch(() => undefined);
 
   const user = client.getQueryData<User>(useUserQuery.getQueryKey(userId));
 

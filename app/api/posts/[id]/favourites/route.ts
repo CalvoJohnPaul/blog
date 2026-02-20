@@ -1,6 +1,6 @@
 import {NextResponse, type NextRequest} from 'next/server';
-import {markPostAsFavourite, unmarkPostAsFavourite} from '~/app/services/Post';
 import {IdDefinition, type VoidHttpResponse} from '~/definitions/common';
+import {markPostAsFavourite, unmarkPostAsFavourite} from '~/services/Post';
 
 export async function PUT(req: NextRequest, ctx: RouteContext<'/api/posts/[id]/favourites'>) {
   const postId = IdDefinition.optional()

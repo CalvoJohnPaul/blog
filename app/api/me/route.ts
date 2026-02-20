@@ -1,8 +1,8 @@
 import {NextResponse, type NextRequest} from 'next/server';
-import {getCurrentUser} from '~/app/services/Session';
-import {updateUser} from '~/app/services/User';
 import {IdDefinition, type HttpResponse} from '~/definitions/common';
 import {UpdateUserDataInputDefinition, type User} from '~/definitions/user';
+import {getCurrentUser} from '~/services/Session';
+import {updateUser} from '~/services/User';
 
 export async function GET() {
   const data = await getCurrentUser();

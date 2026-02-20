@@ -1,11 +1,11 @@
 import {dehydrate, HydrationBoundary} from '@tanstack/react-query';
 import {cookies} from 'next/headers';
 import {notFound} from 'next/navigation';
-import {findPosts} from '~/app/services/Post';
-import {findUser} from '~/app/services/User';
 import {IdDefinition} from '~/definitions/common';
 import {PostsInputDefinition} from '~/definitions/post';
 import {usePostsQuery} from '~/hooks/usePostsQuery';
+import {findPosts} from '~/services/Post';
+import {findUser} from '~/services/User';
 import {getQueryClient} from '~/utils/getQueryClient';
 import {Page__client} from './page.client';
 
@@ -35,17 +35,19 @@ export default async function Page(props: Props) {
 
   if (user == null) return notFound();
 
-  await client.prefetchQuery({
-    queryKey: usePostsQuery.getQueryKey({
-      ...input,
-      tag__has: params.tag,
-    }),
-    queryFn: () =>
-      findPosts({
+  await client
+    .prefetchQuery({
+      queryKey: usePostsQuery.getQueryKey({
         ...input,
         tag__has: params.tag,
       }),
-  });
+      queryFn: () =>
+        findPosts({
+          ...input,
+          tag__has: params.tag,
+        }),
+    })
+    .catch(() => undefined);
 
   return (
     <HydrationBoundary state={dehydrate(client)}>

@@ -1,7 +1,7 @@
 import {NextResponse, type NextRequest} from 'next/server';
-import {createSession, destroySession} from '~/app/services/Session';
 import type {VoidHttpResponse} from '~/definitions/common';
 import {CreateSessionInputDefinition} from '~/definitions/session';
+import {createSession, destroySession} from '~/services/Session';
 
 export async function POST(req: NextRequest) {
   const input = await req.json();

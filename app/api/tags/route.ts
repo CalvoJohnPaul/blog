@@ -1,6 +1,6 @@
 import {NextResponse} from 'next/server';
-import {findTags} from '~/app/services/Tag';
 import type {HttpResponse} from '~/definitions/common';
+import {findTags} from '~/services/Tag';
 
 export async function GET() {
   const data = await findTags();

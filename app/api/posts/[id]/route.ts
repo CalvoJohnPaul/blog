@@ -1,7 +1,7 @@
 import {NextResponse, type NextRequest} from 'next/server';
-import {findPost, findPostBySlug} from '~/app/services/Post';
 import {IdDefinition, type HttpResponse} from '~/definitions/common';
 import type {Post} from '~/definitions/post';
+import {findPost, findPostBySlug} from '~/services/Post';
 
 export async function GET(_req: NextRequest, ctx: RouteContext<'/api/posts/[id]'>) {
   const params = await ctx.params;
