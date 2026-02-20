@@ -142,21 +142,3 @@ export const Date__QueryStringDefinition = z.union([
       return Number.isNaN(d.getTime()) ? undefined : d;
     }),
 ]);
-
-export const Boolean__QueryStringDefinition = z.union([
-  z
-    .boolean()
-    .optional()
-    .nullable()
-    .transform((v) => (v === undefined || v === null ? undefined : v)),
-  z
-    .string()
-    .optional()
-    .nullable()
-    .transform((v) => {
-      if (v === undefined || v === null) return undefined;
-      if (v.toLowerCase() === 'true') return true;
-      if (v.toLowerCase() === 'false') return false;
-      return undefined;
-    }),
-]);

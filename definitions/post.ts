@@ -42,14 +42,6 @@ export const CreatePostInputDefinition = z.object({
   userId: IdDefinition,
 });
 
-export type UpdatePostInput = z.infer<typeof UpdatePostInputDefinition>;
-export const UpdatePostInputDefinition = z.object({
-  title: CreatePostInputDefinition.shape.title.optional().or(z.literal('')),
-  description: CreatePostInputDefinition.shape.description.optional().or(z.literal('')),
-  content: CreatePostInputDefinition.shape.content.optional().or(z.literal('')),
-  tags: CreatePostInputDefinition.shape.tags.optional(),
-});
-
 export type PostsInput = z.infer<typeof PostsInputDefinition>;
 export const PostsInputDefinition = z
   .object({
@@ -83,5 +75,5 @@ export const PostsInputDefinition = z
   .transform((v) => ({
     ...v,
     page: clamp(v.page ?? 1, 1, Number.MAX_SAFE_INTEGER),
-    pageSize: clamp(v.pageSize ?? 10, 1, 100),
+    pageSize: clamp(v.pageSize ?? 5, 1, 100),
   }));

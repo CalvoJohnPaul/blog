@@ -1,4 +1,3 @@
-import {clamp} from 'es-toolkit';
 import {cache} from 'react';
 import type {Prisma} from '~/.generated/prisma/client';
 import {prisma} from '~/config/prisma';
@@ -6,8 +5,8 @@ import type {Comment, CommentsInput, CreateCommentInput} from '~/definitions/com
 import type {Paginated} from '~/definitions/common';
 
 export const findComments = cache(async (input?: CommentsInput): Promise<Paginated<Comment>> => {
-  const page = clamp(input?.page ?? 1, 1, Number.MAX_SAFE_INTEGER);
-  const take = clamp(input?.pageSize ?? 10, 10, 100);
+  const page = input?.page ?? 1;
+  const take = input?.pageSize ?? 5;
   const skip = (page - 1) * take;
   const where: Prisma.CommentWhereInput = {};
 

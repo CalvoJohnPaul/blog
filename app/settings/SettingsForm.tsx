@@ -1,11 +1,11 @@
 'use client';
 
 import {zodResolver} from '@hookform/resolvers/zod';
-import {useForm} from 'react-hook-form';
+import {Controller, useForm} from 'react-hook-form';
 import {useTimeout} from 'usehooks-ts';
+import {PasswordField} from '~/components/forms/PasswordField';
 import {Button} from '~/components/ui/Button';
 import {Field} from '~/components/ui/Field';
-import {PasswordInput} from '~/components/ui/PasswordInput';
 import {toaster} from '~/config/toaster';
 import {UpdateUserDataInputDefinition, type User} from '~/definitions/user';
 import {useMeQuery} from '~/hooks/useMeQuery';
@@ -79,21 +79,21 @@ export function SettingsForm() {
         <Field.Input size="lg" type="email" placeholder="Email" {...form.register('email')} />
         <Field.ErrorText>{form.formState.errors.email?.message}</Field.ErrorText>
       </Field.Root>
-      <Field.Root invalid={!!form.formState.errors.password}>
-        <PasswordInput.Root
-          size="lg"
-          autoComplete="current-password"
-          {...form.register('password')}
-        >
-          <PasswordInput.Control>
-            <PasswordInput.Input placeholder="New Password" />
-            <PasswordInput.VisibilityTrigger>
-              <PasswordInput.Indicator />
-            </PasswordInput.VisibilityTrigger>
-          </PasswordInput.Control>
-        </PasswordInput.Root>
-        <Field.ErrorText>{form.formState.errors.password?.message}</Field.ErrorText>
-      </Field.Root>
+      <Controller
+        control={form.control}
+        name="password"
+        render={(ctx) => (
+          <Field.Root invalid={ctx.fieldState.invalid}>
+            <PasswordField
+              size="lg"
+              placeholder="Password"
+              value={ctx.field.value}
+              onChange={ctx.field.onChange}
+            />
+            <Field.ErrorText>{ctx.fieldState.error?.message}</Field.ErrorText>
+          </Field.Root>
+        )}
+      />
 
       <div className="lg:flex lg:justify-end">
         <Button

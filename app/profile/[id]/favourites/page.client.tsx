@@ -167,10 +167,10 @@ export function Page__client() {
         page={page}
         pageSize={pageSize}
         onPageChange={(details) => {
-          const params = new URLSearchParams();
-          params.set('page', details.page.toString());
-          params.set('pageSize', details.pageSize.toString());
-          router.push(`/${params.toString()}`);
+          const q = new URLSearchParams();
+          q.set('page', details.page.toString());
+          q.set('pageSize', details.pageSize.toString());
+          router.push(`/profile/${params.id}/favourites?${q.toString()}`);
         }}
         count={postsQuery.data?.count ?? 0}
         className="mx-auto mt-12 lg:mt-16 w-fit"

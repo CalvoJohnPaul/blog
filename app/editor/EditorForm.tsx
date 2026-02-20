@@ -6,7 +6,6 @@ import {useRouter} from 'next/navigation';
 import {Controller, useForm} from 'react-hook-form';
 import {RichTextField} from '~/components/forms/RichTextField';
 import {TagsField} from '~/components/forms/TagsField';
-import {TextField} from '~/components/forms/TextField';
 import {Button} from '~/components/ui/Button';
 import {Field} from '~/components/ui/Field';
 import {toaster} from '~/config/toaster';
@@ -60,36 +59,18 @@ export function EditorForm() {
       noValidate
       className="space-y-4"
     >
-      <Controller
-        control={form.control}
-        name="title"
-        render={(ctx) => (
-          <Field.Root invalid={ctx.fieldState.invalid}>
-            <TextField
-              size="lg"
-              placeholder="Article Title"
-              value={ctx.field.value}
-              onChange={ctx.field.onChange}
-            />
-            <Field.ErrorText>{ctx.fieldState.error?.message}</Field.ErrorText>
-          </Field.Root>
-        )}
-      />
-      <Controller
-        control={form.control}
-        name="description"
-        render={(ctx) => (
-          <Field.Root invalid={ctx.fieldState.invalid}>
-            <Field.Textarea
-              placeholder="What's this article about?"
-              value={ctx.field.value}
-              onChange={ctx.field.onChange}
-              autoresize
-            />
-            <Field.ErrorText>{ctx.fieldState.error?.message}</Field.ErrorText>
-          </Field.Root>
-        )}
-      />
+      <Field.Root size="lg" invalid={!!form.formState.errors.title}>
+        <Field.Input size="lg" placeholder="Article Title" {...form.register('title')} />
+        <Field.ErrorText>{form.formState.errors.title?.message}</Field.ErrorText>
+      </Field.Root>
+      <Field.Root invalid={!!form.formState.errors.description}>
+        <Field.Textarea
+          placeholder="What's this article about?"
+          autoresize
+          {...form.register('description')}
+        />
+        <Field.ErrorText>{form.formState.errors.description?.message}</Field.ErrorText>
+      </Field.Root>
       <Controller
         control={form.control}
         name="content"

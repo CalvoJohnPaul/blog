@@ -30,11 +30,6 @@ export const CreateCommentInputDefinition = z.object({
   userId: IdDefinition,
 });
 
-export type UpdateCommentInput = z.infer<typeof UpdateCommentInputDefinition>;
-export const UpdateCommentInputDefinition = z.object({
-  content: CreateCommentInputDefinition.shape.content.optional().or(z.literal('')),
-});
-
 export type CommentsInput = z.infer<typeof CommentsInputDefinition>;
 export const CommentsInputDefinition = z
   .object({
@@ -65,5 +60,5 @@ export const CommentsInputDefinition = z
   .transform((v) => ({
     ...v,
     page: clamp(v.page ?? 1, 1, Number.MAX_SAFE_INTEGER),
-    pageSize: clamp(v.pageSize ?? 10, 1, 100),
+    pageSize: clamp(v.pageSize ?? 5, 1, 100),
   }));

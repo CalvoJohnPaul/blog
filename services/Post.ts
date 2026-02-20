@@ -1,4 +1,3 @@
-import {clamp} from 'es-toolkit';
 import {cache} from 'react';
 import slugify from 'slugify';
 import type {Prisma} from '~/.generated/prisma/client';
@@ -7,8 +6,8 @@ import type {Paginated} from '~/definitions/common';
 import type {CreatePostInput, Post, PostsInput} from '~/definitions/post';
 
 export const findPosts = cache(async (input?: PostsInput): Promise<Paginated<Post>> => {
-  const page = clamp(input?.page ?? 1, 1, Number.MAX_SAFE_INTEGER);
-  const take = clamp(input?.pageSize ?? 10, 10, 100);
+  const page = input?.page ?? 1;
+  const take = input?.pageSize ?? 5;
   const skip = (page - 1) * take;
   const where: Prisma.PostWhereInput = {};
 
