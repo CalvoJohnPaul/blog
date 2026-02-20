@@ -12,9 +12,7 @@ export default async function Layout({children}: PropsWithChildren) {
           <Menu />
           <Suspense>{children}</Suspense>
         </section>
-        <Suspense>
-          <Tags />
-        </Suspense>
+        <Tags />
       </div>
     </div>
   );
