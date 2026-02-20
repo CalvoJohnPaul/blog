@@ -5,10 +5,14 @@
   "packageManager": "pnpm@10.30.0",
   "scripts": {
     "web": "pnpm --filter @blog/web",
+    "dev": "turbo run dev",
+    "start": "turbo run start",
+    "build": "turbo run build",
     "lint": "biome lint",
-    "format": "biome format --write ."
+    "format": "biome format --write"
   },
   "dependencies": {
-    "@biomejs/biome": "^2.4.2"
+    "@biomejs/biome": "^2.4.2",
+    "turbo": "^2.8.10"
   }
 }

@@ -8,7 +8,6 @@ export type {WysiwygCodeBlockTriggerProps} from './WysiwygCodeBlockTrigger';
 export type {WysiwygContentProps} from './WysiwygContent';
 export type {WysiwygContextProps} from './WysiwygContext';
 export type {WysiwygControlProps} from './WysiwygControl';
-export type {WysiwygFloatingMenuProps} from './WysiwygFloatingMenu';
 export type {WysiwygHardBreakTriggerProps} from './WysiwygHardBreakTrigger';
 export type {WysiwygHeadingTriggerProps} from './WysiwygHeadingTrigger';
 export type {WysiwygItalicTriggerProps} from './WysiwygItalicTrigger';
