@@ -1,5 +1,5 @@
 import {NextResponse, type NextRequest} from 'next/server';
-import {prisma} from '~/config/prisma';
+import {markPostAsFavourite, unmarkPostAsFavourite} from '~/app/services/Post';
 import {IdDefinition, type VoidHttpResponse} from '~/definitions/common';
 
 export async function PUT(req: NextRequest, ctx: RouteContext<'/api/posts/[id]/favourites'>) {
@@ -33,21 +33,7 @@ export async function PUT(req: NextRequest, ctx: RouteContext<'/api/posts/[id]/f
     });
   }
 
-  const count = await prisma.favourite.count({
-    where: {
-      postId,
-      userId,
-    },
-  });
-
-  if (count <= 0) {
-    await prisma.favourite.create({
-      data: {
-        userId,
-        postId,
-      },
-    });
-  }
+  await markPostAsFavourite({postId, userId});
 
   return NextResponse.json<VoidHttpResponse>({ok: true});
 }
@@ -83,12 +69,7 @@ export async function DELETE(req: NextRequest, ctx: RouteContext<'/api/posts/[id
     });
   }
 
-  await prisma.favourite.deleteMany({
-    where: {
-      postId,
-      userId,
-    },
-  });
+  await unmarkPostAsFavourite({postId, userId});
 
   return NextResponse.json<VoidHttpResponse>({ok: true});
 }

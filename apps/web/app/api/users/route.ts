@@ -1,6 +1,6 @@
-import {hash} from 'bcrypt';
 import {addDays} from 'date-fns';
 import {NextResponse, type NextRequest} from 'next/server';
+import {createUser} from '~/app/services/User';
 import {prisma} from '~/config/prisma';
 import type {HttpResponse} from '~/definitions/common';
 import {CreateUserInputDefinition, type User} from '~/definitions/user';
@@ -31,32 +31,8 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  const data = await prisma.user
-    .create({
-      data: {
-        ...parsed.data,
-        password: await hash(parsed.data.password, 8),
-      },
-      select: {
-        id: true,
-        bio: true,
-        name: true,
-        email: true,
-        image: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    })
-    .then((v) => ({
-      ...v,
-      following: [],
-      followers: [],
-    }));
-
-  const res = NextResponse.json<HttpResponse<User>>({
-    ok: true,
-    data,
-  });
+  const data = await createUser(parsed.data);
+  const res = NextResponse.json<HttpResponse<User>>({ok: true, data});
 
   res.cookies.set('user', data.id.toString(), {
     httpOnly: true,

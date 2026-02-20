@@ -27,6 +27,7 @@ export type CreateCommentInput = z.infer<typeof CreateCommentInputDefinition>;
 export const CreateCommentInputDefinition = z.object({
   content: z.string().trim().min(4, 'Content too short').max(250, 'Content too long'),
   postId: IdDefinition,
+  userId: IdDefinition,
 });
 
 export type UpdateCommentInput = z.infer<typeof UpdateCommentInputDefinition>;

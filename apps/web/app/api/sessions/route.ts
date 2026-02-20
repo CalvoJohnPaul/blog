@@ -1,7 +1,5 @@
-import {compare} from 'bcrypt';
-import {addDays} from 'date-fns';
 import {NextResponse, type NextRequest} from 'next/server';
-import {prisma} from '~/config/prisma';
+import {createSession, destroySession} from '~/app/services/Session';
 import type {VoidHttpResponse} from '~/definitions/common';
 import {CreateSessionInputDefinition} from '~/definitions/session';
 
@@ -19,15 +17,9 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  const user = await prisma.user.findUnique({
-    where: {email: parsed.data.email},
-    select: {
-      id: true,
-      password: true,
-    },
-  });
+  const ok = await createSession(parsed.data);
 
-  if (user == null) {
+  if (!ok) {
     return NextResponse.json<VoidHttpResponse>({
       ok: false,
       error: {
@@ -37,31 +29,10 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  const matches = await compare(parsed.data.password, user.password);
-
-  if (!matches) {
-    return NextResponse.json<VoidHttpResponse>({
-      ok: false,
-      error: {
-        name: 'UnauthorizedError',
-        message: 'Invalid credentials',
-      },
-    });
-  }
-
-  const res = NextResponse.json<VoidHttpResponse>({ok: true});
-
-  res.cookies.set('user', user.id.toString(), {
-    httpOnly: true,
-    sameSite: 'strict',
-    expires: addDays(new Date(), 7),
-  });
-
-  return res;
+  return NextResponse.json<VoidHttpResponse>({ok: true});
 }
 
 export async function DELETE() {
-  const res = NextResponse.json<VoidHttpResponse>({ok: true});
-  res.cookies.delete('user');
-  return res;
+  await destroySession();
+  return NextResponse.json<VoidHttpResponse>({ok: true});
 }

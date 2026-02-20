@@ -1,12 +1,12 @@
 import {type NextRequest, NextResponse} from 'next/server';
-import {prisma} from '~/config/prisma';
+import {deleteComment} from '~/app/services/Comment';
 import {IdDefinition, type VoidHttpResponse} from '~/definitions/common';
 
 export async function DELETE(_req: NextRequest, ctx: RouteContext<'/api/comments/[id]'>) {
   const params = await ctx.params;
-  const id = IdDefinition.optional().nullable().catch(null).parse(params.id);
+  const commentId = IdDefinition.optional().nullable().catch(null).parse(params.id);
 
-  if (id == null) {
+  if (commentId == null) {
     return NextResponse.json<VoidHttpResponse>({
       ok: false,
       error: {
@@ -16,7 +16,6 @@ export async function DELETE(_req: NextRequest, ctx: RouteContext<'/api/comments
     });
   }
 
-  await prisma.comment.delete({where: {id}});
-
+  await deleteComment(commentId);
   return NextResponse.json<VoidHttpResponse>({ok: true});
 }

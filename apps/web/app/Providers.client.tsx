@@ -8,11 +8,11 @@ import {toaster} from '~/config/toaster';
 import {getQueryClient} from '~/utils/getQueryClient';
 
 export function Providers__client({children}: PropsWithChildren) {
-  const queryClient = getQueryClient();
+  const client = getQueryClient();
 
   return (
     <>
-      <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={client}>
         {children}
         <ReactQueryDevtools />
       </QueryClientProvider>

@@ -17,7 +17,7 @@ import {useMeQuery} from '~/hooks/useMeQuery';
 import {getQueryClient} from '~/utils/getQueryClient';
 
 export function Comments({post}: {post: number}) {
-  const queryClient = getQueryClient();
+  const client = getQueryClient();
 
   const form = useForm({
     resolver: zodResolver(CreateCommentInputDefinition.pick({content: true})),
@@ -48,6 +48,7 @@ export function Comments({post}: {post: number}) {
                 await createCommentMutation.mutateAsync({
                   content: data.content,
                   postId: post,
+                  userId: meQuery.data.id,
                 });
 
                 await commentsQuery.refetch();
@@ -118,7 +119,7 @@ export function Comments({post}: {post: number}) {
                 onClick={async () => {
                   try {
                     await deleteCommentMutation.mutateAsync(comment.id);
-                    queryClient.setQueryData<Paginated<Comment>>(
+                    client.setQueryData<Paginated<Comment>>(
                       useCommentsQuery.getQueryKey({
                         page: 1,
                         pageSize: 100,

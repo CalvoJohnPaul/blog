@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import {useParams, usePathname} from 'next/navigation';
-import {useMeQuery} from '~/hooks/useMeQuery';
 import {useUserQuery} from '~/hooks/useUserQuery';
 import {dataAttr} from '~/utils/dataAttr';
 
@@ -10,7 +9,6 @@ export function Menu() {
   const pathname = usePathname();
   const params = useParams<{id: string}>();
   const userQuery = useUserQuery(params.id);
-  const meQuery = useMeQuery();
 
   const links: {
     path: string;
@@ -27,7 +25,6 @@ export function Menu() {
       path: `/profile/${userQuery.data?.id}/favourites`,
       label: 'Favourites',
       active: pathname === `/profile/${userQuery.data?.id}/favourites`,
-      hidden: userQuery.data?.id !== meQuery.data?.id,
     },
   ];
 

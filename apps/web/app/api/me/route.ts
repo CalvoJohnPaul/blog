@@ -1,44 +1,12 @@
-import {hash} from 'bcrypt';
 import {NextResponse, type NextRequest} from 'next/server';
-import {prisma} from '~/config/prisma';
+import {getCurrentUser} from '~/app/services/Session';
+import {updateUser} from '~/app/services/User';
 import {IdDefinition, type HttpResponse} from '~/definitions/common';
 import {UpdateUserDataInputDefinition, type User} from '~/definitions/user';
 
-export async function GET(req: NextRequest) {
-  const id = IdDefinition.optional().nullable().catch(null).parse(req.cookies.get('user')?.value);
-
-  const data =
-    id == null
-      ? null
-      : await prisma.user
-          .findUnique({
-            where: {id},
-            select: {
-              id: true,
-              bio: true,
-              name: true,
-              email: true,
-              image: true,
-              createdAt: true,
-              updatedAt: true,
-              followers: {select: {followingId: true}},
-              following: {select: {followerId: true}},
-            },
-          })
-          .then((v) =>
-            v == null
-              ? null
-              : {
-                  ...v,
-                  followers: v.following.map((f) => f.followerId),
-                  following: v.followers.map((f) => f.followingId),
-                },
-          );
-
-  return NextResponse.json<HttpResponse<User | null>>({
-    ok: true,
-    data,
-  });
+export async function GET() {
+  const data = await getCurrentUser();
+  return NextResponse.json<HttpResponse<User | null>>({ok: true, data});
 }
 
 export async function PATCH(req: NextRequest) {
@@ -77,33 +45,7 @@ export async function PATCH(req: NextRequest) {
     });
   }
 
-  const data = await prisma.user
-    .update({
-      where: {id},
-      data: {
-        ...parsed.data,
-        password: parsed.data.password ? await hash(parsed.data.password, 8) : undefined,
-      },
-      select: {
-        id: true,
-        bio: true,
-        name: true,
-        email: true,
-        image: true,
-        createdAt: true,
-        updatedAt: true,
-        followers: {select: {followingId: true}},
-        following: {select: {followerId: true}},
-      },
-    })
-    .then((v) => ({
-      ...v,
-      followers: v.following.map((f) => f.followerId),
-      following: v.followers.map((f) => f.followingId),
-    }));
+  const data = await updateUser(id, parsed.data);
 
-  return NextResponse.json<HttpResponse<User>>({
-    ok: true,
-    data,
-  });
+  return NextResponse.json<HttpResponse<User>>({ok: true, data});
 }

@@ -13,8 +13,7 @@ import {useMeQuery} from '~/hooks/useMeQuery';
 import {getQueryClient} from '~/utils/getQueryClient';
 
 export function LoginForm() {
-  const queryClient = getQueryClient();
-
+  const client = getQueryClient();
   const router = useRouter();
   const mutation = useCreateSessionMutation();
   const form = useForm({
@@ -30,7 +29,7 @@ export function LoginForm() {
       onSubmit={form.handleSubmit(async (data) => {
         try {
           await mutation.mutateAsync(data);
-          await queryClient.invalidateQueries({queryKey: useMeQuery.getQueryKey()});
+          await client.invalidateQueries({queryKey: useMeQuery.getQueryKey()});
           router.push('/');
         } catch {
           toaster.error({

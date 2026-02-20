@@ -1,5 +1,5 @@
 import {NextResponse, type NextRequest} from 'next/server';
-import {prisma} from '~/config/prisma';
+import {follow, unfollow} from '~/app/services/Follow';
 import {IdDefinition, type VoidHttpResponse} from '~/definitions/common';
 
 export async function PUT(req: NextRequest, ctx: RouteContext<'/api/users/[id]/follows'>) {
@@ -33,21 +33,9 @@ export async function PUT(req: NextRequest, ctx: RouteContext<'/api/users/[id]/f
     });
   }
 
-  await prisma.follow.upsert({
-    where: {
-      followerId_followingId: {
-        followerId,
-        followingId,
-      },
-    },
-    create: {
-      followerId,
-      followingId,
-    },
-    update: {
-      followerId,
-      followingId,
-    },
+  await follow({
+    followerId,
+    followingId,
   });
 
   return NextResponse.json<VoidHttpResponse>({ok: true});
@@ -84,11 +72,9 @@ export async function DELETE(req: NextRequest, ctx: RouteContext<'/api/users/[id
     });
   }
 
-  await prisma.follow.deleteMany({
-    where: {
-      followerId,
-      followingId,
-    },
+  await unfollow({
+    followerId,
+    followingId,
   });
 
   return NextResponse.json<VoidHttpResponse>({ok: true});

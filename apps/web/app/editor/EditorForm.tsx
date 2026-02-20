@@ -17,6 +17,7 @@ import {usePostsQuery} from '~/hooks/usePostsQuery';
 import {getQueryClient} from '~/utils/getQueryClient';
 
 export function EditorForm() {
+  const client = getQueryClient();
   const router = useRouter();
   const query = useMeQuery();
   const form = useForm({
@@ -30,7 +31,6 @@ export function EditorForm() {
   });
 
   const mutation = useCreatePostMutation();
-  const queryClient = getQueryClient();
 
   return (
     <form
@@ -43,7 +43,7 @@ export function EditorForm() {
             userId: query.data.id,
           });
 
-          queryClient.invalidateQueries({
+          client.invalidateQueries({
             queryKey: usePostsQuery.getQueryKey(),
             exact: false,
             type: 'all',

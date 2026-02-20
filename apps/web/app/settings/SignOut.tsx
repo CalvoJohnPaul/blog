@@ -8,8 +8,7 @@ import {usePostsQuery} from '~/hooks/usePostsQuery';
 import {getQueryClient} from '~/utils/getQueryClient';
 
 export function SignOut() {
-  const queryClient = getQueryClient();
-
+  const client = getQueryClient();
   const router = useRouter();
   const mutation = useDestroySessionMutation();
 
@@ -19,8 +18,8 @@ export function SignOut() {
       onClick={async () => {
         try {
           await mutation.mutateAsync();
-          queryClient.setQueryData(useMeQuery.getQueryKey(), null);
-          queryClient.invalidateQueries({
+          client.setQueryData(useMeQuery.getQueryKey(), null);
+          client.invalidateQueries({
             exact: false,
             queryKey: usePostsQuery.getQueryKey(),
             refetchType: 'active',

@@ -1,7 +1,6 @@
 import {clamp} from 'es-toolkit';
 import * as z from 'zod';
 import {
-  Boolean__QueryStringDefinition,
   Date__QueryStringDefinition,
   DateDefinition,
   IdDefinition,
@@ -25,9 +24,9 @@ export const PostDefinition = z.object({
     name: true,
     image: true,
   }),
-  commentsCount: z.number(),
+  favouritedBy: z.array(z.number()),
   favouritesCount: z.number(),
-  favourite: z.boolean(),
+  commentsCount: z.number(),
   createdAt: DateDefinition,
   updatedAt: DateDefinition,
 });
@@ -65,10 +64,6 @@ export const PostsInputDefinition = z
     slug__in: StringArray__QueryStringDefinition,
     slug__nin: StringArray__QueryStringDefinition,
     slug__contains: String__QueryStringDefinition,
-    tag__eq: String__QueryStringDefinition,
-    tag__neq: String__QueryStringDefinition,
-    tag__in: StringArray__QueryStringDefinition,
-    tag__nin: StringArray__QueryStringDefinition,
     userId__eq: Number__QueryStringDefinition,
     userId__neq: Number__QueryStringDefinition,
     userId__in: NumberArray__QueryStringDefinition,
@@ -81,8 +76,8 @@ export const PostsInputDefinition = z
     updatedAt__gte: Date__QueryStringDefinition,
     updatedAt__lt: Date__QueryStringDefinition,
     updatedAt__lte: Date__QueryStringDefinition,
-    favourited__eq: Boolean__QueryStringDefinition,
-    favourited__neq: Boolean__QueryStringDefinition,
+    tag__has: String__QueryStringDefinition,
+    favourites__has: Number__QueryStringDefinition,
   })
   .partial()
   .transform((v) => ({

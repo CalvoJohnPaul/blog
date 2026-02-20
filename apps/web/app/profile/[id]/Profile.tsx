@@ -14,8 +14,7 @@ import {useUserQuery} from '~/hooks/useUserQuery';
 import {dataAttr} from '~/utils/dataAttr';
 
 export function Profile() {
-  const queryClient = useQueryClient();
-
+  const client = useQueryClient();
   const params = useParams<{id: string}>();
   const userId = Number(params.id);
 
@@ -56,14 +55,14 @@ export function Profile() {
               if (following) {
                 await unfollowMutation.mutateAsync(params.id);
 
-                queryClient.invalidateQueries({
+                client.invalidateQueries({
                   queryKey: usePostsQuery.getQueryKey(),
                   exact: false,
                   type: 'all',
                   refetchType: 'active',
                 });
 
-                queryClient.setQueryData<User>(useMeQuery.getQueryKey(), (prev) => {
+                client.setQueryData<User>(useMeQuery.getQueryKey(), (prev) => {
                   if (!prev) return prev;
                   return {
                     ...prev,
@@ -73,14 +72,14 @@ export function Profile() {
               } else {
                 await followMutation.mutateAsync(params.id);
 
-                queryClient.invalidateQueries({
+                client.invalidateQueries({
                   queryKey: usePostsQuery.getQueryKey(),
                   exact: false,
                   type: 'all',
                   refetchType: 'active',
                 });
 
-                queryClient.setQueryData<User>(useMeQuery.getQueryKey(), (prev) => {
+                client.setQueryData<User>(useMeQuery.getQueryKey(), (prev) => {
                   if (!prev) return prev;
                   return {
                     ...prev,

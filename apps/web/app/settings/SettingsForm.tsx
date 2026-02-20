@@ -13,8 +13,7 @@ import {useUpdateMeMutation} from '~/hooks/useUpdateMeMutation';
 import {getQueryClient} from '~/utils/getQueryClient';
 
 export function SettingsForm() {
-  const queryClient = getQueryClient();
-
+  const client = getQueryClient();
   const form = useForm({
     resolver: zodResolver(UpdateUserDataInputDefinition),
     defaultValues: {
@@ -48,7 +47,7 @@ export function SettingsForm() {
         try {
           const user = await mutation.mutateAsync(data);
 
-          queryClient.setQueryData<User>(useMeQuery.getQueryKey(), user);
+          client.setQueryData<User>(useMeQuery.getQueryKey(), user);
           form.reset(data);
           toaster.success({description: 'Changes have been saved.'});
         } catch (e) {
